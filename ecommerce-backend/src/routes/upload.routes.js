@@ -14,7 +14,8 @@ router.post(
   uploadImages
 );
 
-// Use a wildcard to capture public IDs that include slashes (e.g., "ecommerce/products/abc")
-router.delete("/*", protect, restrictTo("admin"), deleteImage);
+// Express v5 requires /*splat instead of /* for wildcard routes.
+// The public_id (e.g. "ecommerce/products/abc123") is captured in req.params.splat
+router.delete("/*splat", protect, restrictTo("admin"), deleteImage);
 
 module.exports = router;

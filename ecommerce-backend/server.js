@@ -73,7 +73,8 @@ app.get("/", function (req, res) {
 });
 
 // Handle requests to unknown routes
-app.all("*", function (req, res, next) {
+// Express v5 requires {*splat} instead of * for catch-all routes
+app.all("{*splat}", function (req, res, next) {
   const AppError = require("./src/utils/AppError");
   next(new AppError(`Route not found: ${req.originalUrl}`, 404));
 });

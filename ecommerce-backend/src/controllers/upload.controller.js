@@ -25,9 +25,9 @@ const uploadImages = catchAsync(async function (req, res, next) {
 // DELETE /api/v1/upload/:publicId (admin only)
 // Deletes a specific image from Cloudinary using its public_id
 const deleteImage = catchAsync(async function (req, res, next) {
-  // The public_id might contain slashes (e.g., "ecommerce/products/abc123")
-  // so we use req.params[0] to capture the full path after /upload/
-  const publicId = req.params[0];
+  // The public_id might contain slashes (e.g., "ecommerce/products/abc123").
+  // In Express v5, the /*splat wildcard route puts the captured path into req.params.splat
+  const publicId = req.params.splat;
 
   if (!publicId) {
     return next(new AppError("Image public ID is required.", 400));
