@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -34,8 +34,23 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const { register: registerUser } = useAuth();
+  const { register: registerUser, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
+
+  // Redirect already-logged-in users away from the register page
+  useEffect(
+    function () {
+      if (!isAuthLoading && isAuthenticated) {
+        router.replace("/");
+      }
+    },
+    [isAuthenticated, isAuthLoading, router]
+  );
+
+  // While auth state is being determined, render nothing to avoid a flash
+  if (isAuthLoading || isAuthenticated) {
+    return null;
+  }
 
   const {
     register,

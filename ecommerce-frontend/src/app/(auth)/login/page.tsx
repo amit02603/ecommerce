@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -21,8 +21,23 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
+
+  // Redirect already-logged-in users away from the login page
+  useEffect(
+    function () {
+      if (!isAuthLoading && isAuthenticated) {
+        router.replace("/");
+      }
+    },
+    [isAuthenticated, isAuthLoading, router]
+  );
+
+  // While auth state is being determined, render nothing to avoid a flash
+  if (isAuthLoading || isAuthenticated) {
+    return null;
+  }
 
   const {
     register,

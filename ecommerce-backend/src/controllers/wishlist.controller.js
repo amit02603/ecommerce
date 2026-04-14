@@ -54,10 +54,17 @@ const addToWishlist = catchAsync(async function (req, res, next) {
     await wishlist.save();
   }
 
+  // Re-fetch with products populated so the frontend gets full product data,
+  // not just raw ObjectIds (which caused the missing key/alt errors)
+  const populatedWishlist = await Wishlist.findById(wishlist._id).populate(
+    "products",
+    "name images price slug ratings"
+  );
+
   res.status(200).json({
     success: true,
     message: "Product added to wishlist.",
-    wishlist,
+    wishlist: populatedWishlist,
   });
 });
 
@@ -75,10 +82,16 @@ const removeFromWishlist = catchAsync(async function (req, res, next) {
 
   await wishlist.save();
 
+  // Re-fetch with products populated so the frontend gets full product data
+  const populatedWishlist = await Wishlist.findById(wishlist._id).populate(
+    "products",
+    "name images price slug ratings"
+  );
+
   res.status(200).json({
     success: true,
     message: "Product removed from wishlist.",
-    wishlist,
+    wishlist: populatedWishlist,
   });
 });
 

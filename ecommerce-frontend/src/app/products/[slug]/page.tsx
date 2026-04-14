@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
@@ -19,10 +19,13 @@ import { useRouter } from "next/navigation";
 import Spinner from "@/components/ui/Spinner";
 
 interface ProductPageProps {
-  params: { slug: string };
+  // In Next.js 15, route params are a Promise — we unwrap them with React.use()
+  params: Promise<{ slug: string }>;
 }
 
 export default function ProductDetailPage({ params }: ProductPageProps) {
+  // Unwrap the params Promise before accessing any property
+  const { slug } = use(params);
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -38,7 +41,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
     function () {
       async function loadProduct() {
         try {
-          const data = await getProductBySlug(params.slug);
+          const data = await getProductBySlug(slug);
           setProduct(data.product);
         } catch (error) {
           setProduct(null);
@@ -48,7 +51,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
       }
       loadProduct();
     },
-    [params.slug]
+    [slug]
   );
 
   if (isLoading) {

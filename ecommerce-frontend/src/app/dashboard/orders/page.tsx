@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 import { getMyOrders } from "@/services/orderService";
 import { Order } from "@/types";
 import { formatPrice } from "@/utils/formatPrice";
@@ -12,10 +13,15 @@ import Spinner from "@/components/ui/Spinner";
 import { Package, User, MapPin, Heart } from "lucide-react";
 
 export default function OrdersPage() {
+  const { isAuthenticated } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(function () {
+    if (!isAuthenticated) {
+      setIsLoading(false);
+      return;
+    }
     getMyOrders()
       .then(function (data) {
         setOrders(data.orders);
@@ -26,7 +32,7 @@ export default function OrdersPage() {
       .finally(function () {
         setIsLoading(false);
       });
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <ProtectedRoute>

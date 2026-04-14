@@ -76,12 +76,12 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Auto-generate slug from product name before saving
-productSchema.pre("save", function (next) {
+// Auto-generate slug from product name before saving.
+// Using async without next — Mongoose v9 uses promise resolution to continue.
+productSchema.pre("save", async function () {
   if (this.isModified("name")) {
     this.slug = slugify(this.name, { lower: true, strict: true });
   }
-  next();
 });
 
 const Product = mongoose.model("Product", productSchema);

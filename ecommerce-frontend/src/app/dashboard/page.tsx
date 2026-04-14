@@ -13,11 +13,17 @@ import Spinner from "@/components/ui/Spinner";
 import { Package, User, MapPin, Heart } from "lucide-react";
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Only fetch orders once we know the user is authenticated.
+  // Without this guard, the fetch runs before the token is set and gets a 401.
   useEffect(function () {
+    if (!isAuthenticated) {
+      setIsLoading(false);
+      return;
+    }
     getMyOrders()
       .then(function (data) {
         // Only show the 3 most recent orders on the dashboard overview
@@ -29,7 +35,7 @@ export default function DashboardPage() {
       .finally(function () {
         setIsLoading(false);
       });
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <ProtectedRoute>

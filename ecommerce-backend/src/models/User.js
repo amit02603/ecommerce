@@ -51,17 +51,18 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Before saving a user, hash the password if it was changed
-userSchema.pre("save", async function (next) {
+// Before saving a user, hash the password if it was changed.
+// In Mongoose v9, async pre-save hooks should NOT accept next() — returning
+// a resolved promise is what tells Mongoose to continue to the next step.
+userSchema.pre("save", async function () {
   // If the password field wasn't modified, skip this step
   if (!this.isModified("password")) {
-    return next();
+    return;
   }
 
   // Hash the password with a cost factor of 12
   // Higher cost = more secure but slower. 12 is a good balance.
   this.password = await bcrypt.hash(this.password, 12);
-  next();
 });
 
 // Method to compare entered password with the stored hashed password

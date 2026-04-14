@@ -27,10 +27,10 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Auto-generate slug from name before saving
-categorySchema.pre("save", function (next) {
+// Auto-generate slug from name before saving.
+// Using async without next — Mongoose v9 uses promise resolution to continue.
+categorySchema.pre("save", async function () {
   this.slug = slugify(this.name, { lower: true });
-  next();
 });
 
 const Category = mongoose.model("Category", categorySchema);

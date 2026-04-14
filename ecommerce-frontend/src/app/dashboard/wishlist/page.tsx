@@ -66,15 +66,18 @@ export default function WishlistPage() {
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-md)" }}>
-                  {wishlist.products.map(function (product) {
-                    const productObj = product as Product;
-                    const imageUrl = productObj.images && productObj.images.length > 0
-                      ? productObj.images[0].url
-                      : "/placeholder-product.png";
+                  {wishlist.products.map(function (item) {
+                    // The API now always returns populated product objects after our backend fix.
+                    const product = item as Product;
+                    const imageUrl =
+                      product.images && product.images.length > 0
+                        ? product.images[0].url
+                        : "/placeholder-product.png";
 
                     return (
                       <div
-                        key={productObj._id}
+                        // Fall back to stringified item so key is never undefined
+                        key={product._id || String(item)}
                         style={{
                           display: "flex",
                           gap: "var(--spacing-md)",
@@ -86,17 +89,17 @@ export default function WishlistPage() {
                       >
                         <Image
                           src={imageUrl}
-                          alt={productObj.name}
+                          alt={product.name || "Product image"}
                           width={80}
                           height={80}
                           style={{ borderRadius: "var(--radius-sm)", objectFit: "cover" }}
                         />
                         <div style={{ flex: 1 }}>
-                          <Link href={`/products/${productObj.slug}`}>
-                            <p style={{ fontWeight: 600, marginBottom: "4px" }}>{productObj.name}</p>
+                          <Link href={`/products/${product.slug}`}>
+                            <p style={{ fontWeight: 600, marginBottom: "4px" }}>{product.name}</p>
                           </Link>
                           <p style={{ color: "var(--color-primary)", fontWeight: 700 }}>
-                            {formatPrice(productObj.price)}
+                            {formatPrice(product.price)}
                           </p>
                         </div>
                         <div style={{ display: "flex", gap: "var(--spacing-sm)" }}>
@@ -104,7 +107,7 @@ export default function WishlistPage() {
                             variant="primary"
                             size="sm"
                             onClick={function () {
-                              handleMoveToCart(productObj);
+                              handleMoveToCart(product);
                             }}
                           >
                             Add to Cart
@@ -113,7 +116,7 @@ export default function WishlistPage() {
                             variant="ghost"
                             size="sm"
                             onClick={function () {
-                              removeProduct(productObj._id);
+                              removeProduct(product._id);
                             }}
                             style={{ color: "var(--color-error)" }}
                           >

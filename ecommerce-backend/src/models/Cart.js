@@ -40,11 +40,11 @@ const cartSchema = new mongoose.Schema(
 );
 
 // Recalculate total amount before every save
-cartSchema.pre("save", function (next) {
+// In Mongoose v9, async pre-save hooks should NOT accept next()
+cartSchema.pre("save", async function () {
   this.totalAmount = this.items.reduce(function (total, item) {
     return total + item.price * item.quantity;
   }, 0);
-  next();
 });
 
 const Cart = mongoose.model("Cart", cartSchema);
