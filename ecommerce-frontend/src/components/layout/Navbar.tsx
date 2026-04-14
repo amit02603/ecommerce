@@ -14,6 +14,7 @@ export default function Navbar() {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   async function handleLogout() {
     await logout();
@@ -34,18 +35,45 @@ export default function Navbar() {
           onSubmit={function (e) {
             e.preventDefault();
             const formData = new FormData(e.currentTarget);
-            const keyword = formData.get("keyword");
+            const keyword = formData.get("keyword")?.toString().trim();
             if (keyword) {
               router.push(`/products?keyword=${keyword}`);
+            } else {
+              router.push("/products");
             }
           }}
         >
-          <input
-            type="text"
-            name="keyword"
-            placeholder="Search for products..."
-            className="navbar-search-input"
-          />
+          <div style={{ flex: 1, position: "relative", display: "flex" }}>
+            <input
+              type="text"
+              name="keyword"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for products..."
+              className="navbar-search-input"
+              style={{ paddingRight: "36px" }}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  router.push("/products");
+                }}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "var(--color-text-muted)",
+                  padding: "4px",
+                  display: "flex",
+                }}
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
           <button type="submit" className="navbar-search-btn">
             Search
           </button>
@@ -145,20 +173,47 @@ export default function Navbar() {
           <form
             onSubmit={function (e) {
               e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              const keyword = formData.get("keyword");
+              const keyword = searchQuery.trim();
               if (keyword) {
                 router.push(`/products?keyword=${keyword}`);
-                setMobileMenuOpen(false);
+              } else {
+                router.push("/products");
               }
+              setMobileMenuOpen(false);
             }}
           >
-            <input
-              type="text"
-              name="keyword"
-              placeholder="Search products..."
-              className="mobile-search-input"
-            />
+            <div style={{ position: "relative", display: "flex", width: "100%", marginBottom: "var(--spacing-sm)" }}>
+              <input
+                type="text"
+                name="keyword"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search products..."
+                className="mobile-search-input"
+                style={{ width: "100%", paddingRight: "36px", marginBottom: 0 }}
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    router.push("/products");
+                    setMobileMenuOpen(false);
+                  }}
+                  style={{
+                    position: "absolute",
+                    right: "12px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "var(--color-text-muted)",
+                    padding: "4px",
+                    display: "flex",
+                  }}
+                >
+                  <X size={18} />
+                </button>
+              )}
+            </div>
           </form>
           <Link href="/products" className="mobile-nav-link" onClick={function () { setMobileMenuOpen(false); }}>
             All Products

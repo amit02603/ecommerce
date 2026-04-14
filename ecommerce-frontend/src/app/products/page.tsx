@@ -73,7 +73,10 @@ export default function ProductsPage() {
     } else {
       params.delete(key);
     }
-    params.delete("page"); // Reset to page 1 whenever a filter changes
+    // Reset to page 1 whenever a filter changes, but NOT when changing the page itself
+    if (key !== "page") {
+      params.delete("page");
+    }
     router.push(`/products?${params.toString()}`);
   }
 
