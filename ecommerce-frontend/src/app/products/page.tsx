@@ -9,10 +9,13 @@ import { Product, Category } from "@/types";
 import ProductGrid from "@/components/product/ProductGrid";
 import Button from "@/components/ui/Button";
 
+import { Suspense } from "react";
+import Spinner from "@/components/ui/Spinner";
+
 // How many products to show per page
 const PRODUCTS_PER_PAGE = 12;
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -251,5 +254,17 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="page-loader">
+        <Spinner size="lg" />
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 }
