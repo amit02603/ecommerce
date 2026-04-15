@@ -31,10 +31,14 @@ const app = express();
 // Security middleware — sets various HTTP headers to protect the app
 app.use(helmet());
 
+// Safely get the CLIENT_URL and strip any accidental trailing slash that causes CORS to fail
+const rawClientUrl = process.env.CLIENT_URL || "http://localhost:3000";
+const safeClientUrl = rawClientUrl.endsWith("/") ? rawClientUrl.slice(0, -1) : rawClientUrl;
+
 // Enable CORS so the frontend (on a different port) can talk to this server
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: safeClientUrl,
     credentials: true, // Needed to allow cookies to be sent
   })
 );
