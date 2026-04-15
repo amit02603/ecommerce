@@ -37,6 +37,15 @@ export default function RegisterPage() {
   const { register: registerUser, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
 
+  // useForm must be called unconditionally (Rules of Hooks)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+  });
+
   // Redirect already-logged-in users away from the register page
   useEffect(
     function () {
@@ -51,14 +60,6 @@ export default function RegisterPage() {
   if (isAuthLoading || isAuthenticated) {
     return null;
   }
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
-  });
 
   async function onSubmit(data: RegisterFormData) {
     try {
