@@ -19,6 +19,8 @@ function sendToken(user, statusCode, res) {
     httpOnly: true,
     // In production, only send cookie over HTTPS
     secure: process.env.NODE_ENV === "production",
+    // REQUIRED: For cross-domain cookies (Vercel Frontend <-> Render Backend)
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   };
 
   // Remove password from the response payload so it's never sent to the client
