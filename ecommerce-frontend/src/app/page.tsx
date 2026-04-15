@@ -6,7 +6,7 @@ import { getCategories } from "@/services/categoryService";
 import ProductGrid from "@/components/product/ProductGrid";
 
 export const metadata: Metadata = {
-  title: "ShopNest — Modern eCommerce Store",
+  title: "ShopNest - Modern eCommerce Store",
   description: "Shop the latest products across electronics, fashion, home and more.",
 };
 
