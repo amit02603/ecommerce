@@ -69,6 +69,9 @@ function errorHandler(err, req, res, next) {
     sendErrorDev(err, res);
   } else {
     let error = Object.assign(Object.create(Object.getPrototypeOf(err)), err);
+    // Object.assign does NOT copy non-enumerable properties like message/name from native Errors
+    error.message = err.message;
+    error.name = err.name;
 
     // Mongoose bad ObjectId
     if (err.name === "CastError") error = handleCastErrorDB(error);
