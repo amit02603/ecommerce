@@ -7,7 +7,7 @@ const catchAsync = require("../utils/catchAsync");
 const getCart = catchAsync(async function (req, res, next) {
   const cart = await Cart.findOne({ user: req.user._id }).populate(
     "items.product",
-    "name images price stock"
+    "name slug images price stock"
   );
 
   if (!cart) {
@@ -73,7 +73,7 @@ const addToCart = catchAsync(async function (req, res, next) {
 
   const updatedCart = await Cart.findById(cart._id).populate(
     "items.product",
-    "name images price stock"
+    "name slug images price stock"
   );
 
   res.status(200).json({
@@ -106,7 +106,7 @@ const updateCartItem = catchAsync(async function (req, res, next) {
 
   const updatedCart = await Cart.findById(cart._id).populate(
     "items.product",
-    "name images price stock"
+    "name slug images price stock"
   );
 
   res.status(200).json({
@@ -133,7 +133,7 @@ const removeFromCart = catchAsync(async function (req, res, next) {
 
   const updatedCart = await Cart.findById(cart._id).populate(
     "items.product",
-    "name images price stock"
+    "name slug images price stock"
   );
 
   res.status(200).json({
